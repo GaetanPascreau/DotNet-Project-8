@@ -14,7 +14,7 @@ namespace AppointmentService
                                        [Range(1, int.MaxValue, ErrorMessage = "PatientId is required")] int PatientId);
 
 
-    // Add a validation for StratDatetime which canot occur before current DateTime
+    // Add a validation for StartDatetime which cannot occur before current DateTime
     public class MyStartDateTime : ValidationAttribute
     {
         public override bool IsValid(object value)

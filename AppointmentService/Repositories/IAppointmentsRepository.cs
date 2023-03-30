@@ -16,5 +16,11 @@ namespace AppointmentService.Repositories
         Task UpdateAppointment(Appointment appointment);
 
         Task DeleteAppointment(int Id);
+
+        // Check all available Dates in a consultant calendar
+        Task<List<ConsultantCalendar>> GetAvailableDatesByConsultant(int consultantId);
+
+        // Check if a specified date is available for a specified consultant
+        Task<bool> IsAvailableDateforConsultant(int consultantId, DateTime startDateTime);
     }
 }

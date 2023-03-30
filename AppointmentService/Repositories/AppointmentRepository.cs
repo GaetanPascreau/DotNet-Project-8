@@ -41,21 +41,41 @@ namespace AppointmentService.Repositories
             }
 
             _context.Appointments.Add(appointment);
+
+            // Set Available to false in the ConsultantCalendar table for this date and this consultant
+            var dateToCheck = await _context.ConsultantCalendars.FirstOrDefaultAsync(consultantCalendar => consultantCalendar.ConsultantId == appointment.ConsultantId && consultantCalendar.Date == appointment.StartDateTime);
+            dateToCheck.Available = false;
+
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAppointment(Appointment appointment)
         {
-            var AppointmentToUpdate = _context.Appointments.Find(appointment.Id);
-            if (AppointmentToUpdate is null)
+            _context.ChangeTracker.Clear();
+
+            var appointmentToUpdate = await _context.Appointments.FirstOrDefaultAsync(app => app.Id == appointment.Id);
+
+            if (appointmentToUpdate is null)
             {
                 throw new ArgumentNullException(nameof(appointment));
             }
 
-            AppointmentToUpdate.StartDateTime = appointment.StartDateTime;
-            AppointmentToUpdate.EndDateTime = appointment.EndDateTime;
-            AppointmentToUpdate.ConsultantId = appointment.ConsultantId;
-            AppointmentToUpdate.PatientId = appointment.PatientId;
+            // if the appointment's date was modified, set the Available field to true for the original date, and to false for the new date
+            if(appointment.StartDateTime != appointmentToUpdate.StartDateTime)
+            {
+                var originalAppointmentDate = await _context.ConsultantCalendars.FirstOrDefaultAsync(consultantCalendar => consultantCalendar.ConsultantId == appointmentToUpdate.ConsultantId && consultantCalendar.Date == appointmentToUpdate.StartDateTime);
+                originalAppointmentDate.Available = true;
+
+                var newAppointmentDate = await _context.ConsultantCalendars.FirstOrDefaultAsync(consultantCalendar => consultantCalendar.ConsultantId == appointment.ConsultantId && consultantCalendar.Date == appointment.StartDateTime);
+                newAppointmentDate.Available = false;
+
+                await _context.SaveChangesAsync();
+            }
+
+            appointmentToUpdate.StartDateTime = appointment.StartDateTime;
+            appointmentToUpdate.EndDateTime = appointment.EndDateTime;
+            appointmentToUpdate.ConsultantId = appointment.ConsultantId;
+            appointmentToUpdate.PatientId = appointment.PatientId;
 
             await _context.SaveChangesAsync();
         }
@@ -70,7 +90,30 @@ namespace AppointmentService.Repositories
             }
 
             _context.Appointments.Remove(appointmentToDelete);
+
+            // Set Available to true in the ConsultantCalendar table for this date and this consultant
+            var dateToCheck = await _context.ConsultantCalendars.FirstOrDefaultAsync(consultantCalendar => consultantCalendar.ConsultantId == appointmentToDelete.ConsultantId && consultantCalendar.Date == appointmentToDelete.StartDateTime);
+            dateToCheck.Available = true;
+
             await _context.SaveChangesAsync();
+        }
+
+        // Get all Available date for a consultant
+        public async Task<List<ConsultantCalendar>> GetAvailableDatesByConsultant(int consultantId)
+        {
+            var availableAppointments = await _context.ConsultantCalendars.FromSqlRaw("SELECT * FROM [dbo].[ConsultantCalendar] WHERE ConsultantId = {0} and Available = True, consultantId").ToListAsync();
+            return availableAppointments;
+        }
+
+        // Check availability of a specified date for a specified consultant
+        public async Task<bool> IsAvailableDateforConsultant(int consultantId, DateTime startDateTime)
+        {
+            var dateToCheck = await _context.ConsultantCalendars.FirstOrDefaultAsync(consultantCalendar => consultantCalendar.ConsultantId == consultantId && consultantCalendar.Date == startDateTime);
+            if(dateToCheck == null || dateToCheck.Available == false)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

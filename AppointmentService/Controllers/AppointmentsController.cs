@@ -32,7 +32,6 @@ namespace AppointmentService.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<AppointmentDto>> GetByIdAsync(int id)
         {
-            // var appointment = appointments.Where(appointment => appointment.Id == id).SingleOrDefault();
             var appointment = await _appointmentsRepository.GetSingleAppointment(id);
 
             if (appointment == null)
@@ -47,7 +46,13 @@ namespace AppointmentService.Controllers
         [HttpPost]
         public async Task<ActionResult<AppointmentDto>> PostAsync(CreateAppointmentDto createAppointmentDto)
         {
-            var enDateTime = createAppointmentDto.StartDateTime.AddMinutes(30);
+            // First check that the selected date is available for the given consultant
+            var isAvailableDate = await _appointmentsRepository.IsAvailableDateforConsultant(createAppointmentDto.ConsultantId, createAppointmentDto.StartDateTime);
+            
+            if(!isAvailableDate)
+            {
+                return NotFound("Sorry, this date is not available.");
+            }
 
             var appointment = new Appointment
             {
@@ -66,11 +71,20 @@ namespace AppointmentService.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAsync(int id, UpdateAppointmentDto updateAppointmentDto)
         {
+            // First check if the appointment to update really exists in the db
             var existingAppointment = await _appointmentsRepository.GetSingleAppointment(id);
 
             if (existingAppointment == null)
             {
                 return NotFound();
+            }
+
+            // Then check whether the selected date is available for the given consultant
+            var isAvailableDate = await _appointmentsRepository.IsAvailableDateforConsultant(updateAppointmentDto.ConsultantId, updateAppointmentDto.StartDateTime);
+
+            if (!isAvailableDate)
+            {
+                return NotFound("Sorry, this date is not available.");
             }
 
             existingAppointment.StartDateTime = updateAppointmentDto.StartDateTime;

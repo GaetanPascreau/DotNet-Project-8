@@ -36,8 +36,16 @@ namespace AppointmentService
             // Add services for Repositories and LocalDbContext
             services.AddScoped<IAppointmentsRepository, AppointmentRepository>();
 
+            //// For Running the db in IIS
+            //services.AddDbContext<CHDBContext>(options =>
+            //     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            // For running the db inside Docker
             services.AddDbContext<CHDBContext>(options =>
-                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                 options.UseSqlServer(Configuration.GetConnectionString("Default")));
+
+            // Add the Database Exception Filter
+            //services.AddDatabaseDeveloperPageExceptionFilter();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,9 +58,13 @@ namespace AppointmentService
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AppointmentService v1"));
             }
 
-            app.UseHttpsRedirection();
+           // app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AppointmentService v1"));
 
             app.UseAuthorization();
 
