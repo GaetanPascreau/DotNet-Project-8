@@ -98,10 +98,10 @@ namespace AppointmentService.Repositories
             await _context.SaveChangesAsync();
         }
 
-        // Get all Available date for a consultant
+        // Get all Available dates for a consultant
         public async Task<List<ConsultantCalendar>> GetAvailableDatesByConsultant(int consultantId)
         {
-            var availableAppointments = await _context.ConsultantCalendars.FromSqlRaw("SELECT * FROM [dbo].[ConsultantCalendar] WHERE ConsultantId = {0} and Available = True, consultantId").ToListAsync();
+            var availableAppointments = await _context.ConsultantCalendars.FromSqlRaw("SELECT * FROM [dbo].[ConsultantCalendar] WHERE ConsultantId = {0} and Available = 1", consultantId).ToListAsync();
             return availableAppointments;
         }
 

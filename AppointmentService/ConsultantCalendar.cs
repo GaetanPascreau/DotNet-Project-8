@@ -1,6 +1,7 @@
 namespace AppointmentService
 {
     using System;
+    using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
     [Table("ConsultantCalendar")]
@@ -8,10 +9,14 @@ namespace AppointmentService
     {
         public int Id { get; set; }
 
-        public int? ConsultantId { get; set; }
+        public int ConsultantId { get; set; }
 
-        public DateTime? Date { get; set; }
+        public DateTime Date { get; set; }
 
-        public bool? Available { get; set; }
+        public bool Available { get; set; }
+
+        // Tracking property to handle concurrency at the time of appointment booking
+        //[Timestamp]
+        //public byte[] RowVersion { get; set; }
     }
 }

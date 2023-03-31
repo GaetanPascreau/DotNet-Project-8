@@ -1,4 +1,5 @@
-﻿using AppointmentService.Repositories;
+﻿using AppointmentService.DTOs;
+using AppointmentService.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace AppointmentService.Controllers
         public async Task<IEnumerable<AppointmentDto>> GetAsync()
         {
             var appointments = (await _appointmentsRepository.GetAllAppointments())
-                                .Select(appointment => appointment.AsDto());
+                                .Select(appointment => appointment.AppointmentAsDto());
 
             return appointments;
         }
@@ -39,7 +40,7 @@ namespace AppointmentService.Controllers
                 return NotFound();
             }
 
-            return appointment.AsDto();
+            return appointment.AppointmentAsDto();
         }
 
         // POST/appointments

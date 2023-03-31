@@ -35,6 +35,7 @@ namespace AppointmentService
 
             // Add services for Repositories and LocalDbContext
             services.AddScoped<IAppointmentsRepository, AppointmentRepository>();
+            services.AddScoped<IConsultantCalendarRepository, ConsultantCalendarRepository>();
 
             //// For Running the db in IIS
             //services.AddDbContext<CHDBContext>(options =>
