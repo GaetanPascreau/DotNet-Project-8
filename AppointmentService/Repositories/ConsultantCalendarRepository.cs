@@ -22,9 +22,22 @@ namespace AppointmentService.Repositories
             return consultantCalendars;
         }
 
+        public async Task<List<ConsultantCalendar>> GetConsultantCalendarsByConsultantId(int consultantId)
+        {
+            //var consultantCalendar = await _context.ConsultantCalendars.SingleOrDefaultAsync(app => app.Id == id);
+            var consultantCalendars = await _context.ConsultantCalendars.Where(c => c.ConsultantId == consultantId).ToListAsync();
+
+            if (consultantCalendars == null)
+            {
+                return null;
+            }
+
+            return consultantCalendars;
+        }
+
         public async Task<ConsultantCalendar> GetConsultantCalendarById(int id)
         {
-            var consultantCalendar = await _context.ConsultantCalendars.SingleOrDefaultAsync(app => app.Id == id);
+            var consultantCalendar = await _context.ConsultantCalendars.FirstOrDefaultAsync(c => c.Id == id);
 
             if (consultantCalendar == null)
             {
@@ -36,7 +49,8 @@ namespace AppointmentService.Repositories
 
         public async Task<IEnumerable<ConsultantCalendar>> GetAvailableAppointmentsByConsultantIdAsync(int consultantId)
         {
-            var availableAppointments = await _context.ConsultantCalendars.FromSqlRaw("SELECT * FROM [dbo].[ConsultantCalendar] WHERE ConsultantId = {0} and Available = 1", consultantId).ToListAsync();
+            var availableAppointments = await _context.ConsultantCalendars.FromSqlRaw(
+                "SELECT * FROM [dbo].[ConsultantCalendar] WHERE ConsultantId = {0} and Available = 1", consultantId).ToListAsync();
             return availableAppointments;
         }
 
@@ -54,7 +68,7 @@ namespace AppointmentService.Repositories
 
         public async Task UpdateConsultantCalendar(ConsultantCalendar consultantCalendar)
         {
-            _context.ChangeTracker.Clear();
+            //_context.ChangeTracker.Clear();
 
             var consultantCalendarToUpdate = await _context.ConsultantCalendars.FirstOrDefaultAsync(app => app.Id == consultantCalendar.Id);
 

@@ -13,7 +13,7 @@ namespace CalifornianHealthMonolithic.Controllers
         // GET: Booking
         //TODO: Change this method to display the consultant calendar. Ensure that the user can have a real time view of 
         //the consultant's availability;
-        public ActionResult GetConsultantCalendar()
+        public ActionResult GetConsultantCalendar(int id) //parameter added
         {
             ConsultantModelList conList = new ConsultantModelList();
             CHDBContext dbContext = new CHDBContext();
@@ -22,6 +22,8 @@ namespace CalifornianHealthMonolithic.Controllers
             cons = repo.FetchConsultants(dbContext);
             conList.ConsultantsList = new SelectList(cons, "Id", "FName");
             conList.consultants = cons;
+            conList.consultantCalendars = repo.FetchConsultantCalendars(dbContext); //added
+            conList.selectedConsultantId = id; //added
 
             return View(conList);
         }

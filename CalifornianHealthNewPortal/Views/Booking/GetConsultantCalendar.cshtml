@@ -1,0 +1,158 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- consultant calendar-->
+<section>
+    <label for="consultant">Select Consultant you wish to make an appointment for</label>
+    <div class="form-group">
+        <select name="consultants" id="consultant-select">
+            <option value="">--Please choose a consultant--</option>
+        </select>
+        <br />
+    </div>
+</section>
+
+<DxCalendar></DxCalendar>
+<text id="consultant-info" x="100" y="35" fill="#ffffff" style="font-size:22px; font-family: Arial; font-weight:bold;"></text>
+<br />
+<div id="calendar"></div>
+
+<div id="testData"></div>
+
+<section>
+    <script>
+        var EventList;
+        var selectedValue;
+
+        // DISPLAY THE LIST OF CONSULTANTS IN A SELECT
+        fetch("http://localhost:8080/api/Consultants").then(result => result.json()).then(data =>
+        {
+            data.forEach((item, index) => {
+                document.getElementById("consultant-select").insertAdjacentHTML("beforeend",
+                    `<option value="${index}">${item.fName + " " + item.lName + " - " + item.speciality}</option>`
+                )
+            })
+        }
+        );
+
+        // GET INFO FROM THE SELECTED CONSULTANT  
+        var mySelect = document.getElementById("consultant-select");
+        var consultantInfo = document.getElementById("consultant-info");
+        mySelect.addEventListener("change", function () {
+            selectedValue = mySelect.options[mySelect.selectedIndex].text; 
+            consultantInfo.innerHTML = "Calendar for " + selectedValue;
+
+            // GET SELECTED CONSULTANT's Id
+            var selectedConsultantId = parseInt(mySelect.value) + 1;
+
+            // GET ALL CONSULTANTCALENDAR FOR THE SELECTED CONSULTANT
+            fetch("http://localhost:8080/ConsultantCalendars/Consultant/" + selectedConsultantId).then(result => result.json()).then(data =>
+            {
+                EventList = data;
+                ShowCalendar();
+                //data.forEach((item, index) => {
+                //     document.getElementById("testData").insertAdjacentHTML("beforeend",
+                //    `<p>${item.consultantId + " - " + item.date + " - " + item.available}</p>`
+                //    )
+                //})
+            }
+            );
+        });
+
+        
+        // DISPLAY THE FULL CALENDAR WITH AVAILABLE DATES FOR THE SELECTED CONSULTANT
+        function ShowCalendar(){
+                var calendarEl = document.getElementById('calendar');
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    dateClick: function (info) {
+                        alert('a day has been clicked!');
+                        info.dayEl.style.backgroundColor = 'red';
+                    },
+                    headerToolbar:{
+                        left: 'prev,next',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                   // height: 500,
+                   // aspectRatio: 1.35,
+                    slotDuration : "00:30",
+                    eventClick:function(info){
+                    
+                        // addd the logic for making the appointment + confirmation
+
+                        // 0) try to Get all usefull informations from info :
+                        console.log(info) // gives an object
+                        console.log(info.event._def.extendedProps.consultantId) // provides the consultantId
+                        console.log(info.event._def.extendedProps.available) // provides the status (available = true)
+                        console.log(info.event._def.extendedProps.eventId) // provides the Id of the clicked ConsultantCalendar
+                        //console.log(info.event._def.publicId) // provides the Id of the clicked ConsultantCalendar
+                        console.log(info.event._instance.range.start.toISOString()) // provides the date of the appointment with the correct timezone (= no GMT+0200)
+                        
+                        // then I should :
+                        // 1) check whether the clicked schedule is still available,
+
+                        // 2) then create the appointment in the Appointments table in the CH database
+                        fetch("http://localhost:8080/Appointments", {
+                            // Adding method type
+                            method:"POST",
+
+                            // Adding body or contents to send
+                            body: JSON.stringify({
+                                startDateTime: info.event._instance.range.start.toISOString(),
+                                consultantId: info.event._def.extendedProps.consultantId,
+                                patientId: 1 //en dur pour le momment => il faudra ajouter le module de login
+                            }),
+                            // Adding headers to the request
+                            headers: {
+                                "Content-type": "application/json; charset=UTF-8"
+                            }
+                        })
+                        // converting to JSON
+                        .then(response => response.json())
+                        // displaying the results to console
+                        .then(json => console.log(json));
+                        
+
+                        // 3) then update the available field in the ConsultantCalendar table for the selected consultant/schedule, to false
+                             //we need to call the PUT/ConsultantCalendar/id, with id = info.event._def.publicId and set "available"" to false
+                        fetch("http://localhost:8080/ConsultantCalendars/" + info.event._def.publicId, {
+                            // Adding method type
+                            method: "PUT",
+
+                            // Adding body or contents to send
+                            body: JSON.stringify({
+                                consultantId: info.event._def.extendedProps.consultantId,
+                                date: info.event._instance.range.start.toISOString(),
+                                available: false
+                            }),
+
+                            // Adding headers to the request
+                            headers: {
+                                "Content-type": "application/json; charset=UTF-8"
+                            }
+                        })
+                        // converting to JSON
+                        .then(response => response.json())
+                        // displaying the results to console
+                        .then(json => console.log(json));
+
+                        // 4) return a message "Appointement was successfully booked"
+                        alert('Your appointment has been successfully scheduled.');
+                        info.el.style.backgroundColor = 'red';
+
+                        // 5) reload page to show the update or go back to home page => so user cannot click twice on the schedule
+                    },
+                    events: EventList.filter(x => x.available != false).map(event=>{
+                        let endDate = new Date(event.date);
+                        endDate.setMinutes(endDate.getMinutes()+30);
+                        return {...event , allDay:false ,forceEventDuration : true , defaultTimedEventDuration :"00:30" , end : endDate , id : event.id , eventId : event.id };
+                    })
+                });
+                calendar.render();
+        }
+    </script>
+</section>
+<!-- / consultant calendar-->

@@ -102,14 +102,14 @@ namespace AppointmentService.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            var Appointment = await _appointmentsRepository.GetSingleAppointment(id);
+            var appointmentToDelete = await _appointmentsRepository.GetSingleAppointment(id);
 
-            if (Appointment == null)
+            if (appointmentToDelete == null)
             {
                 return NotFound();
             }
 
-            await _appointmentsRepository.DeleteAppointment(Appointment.Id);
+            await _appointmentsRepository.DeleteAppointment(appointmentToDelete.Id);
 
             return NoContent();
         }

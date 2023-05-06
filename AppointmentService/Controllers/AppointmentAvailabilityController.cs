@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace AppointmentService.Controllers
 {
     [ApiController]
-    [Route("AppointmanetAvailability")]
+    [Route("AppointmentAvailability")]
     public class AppointmentAvailabilityController
     {
         private readonly IConsultantCalendarRepository _consultantCalendarRepository;

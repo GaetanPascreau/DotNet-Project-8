@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dea73353-a185-41b8-9f5a-a2ce8d8acb26</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Content\bootstrap-theme.css" />
+    <None Remove="Content\bootstrap-theme.css.map" />
+    <None Remove="Content\bootstrap-theme.min.css" />
+    <None Remove="Content\bootstrap-theme.min.css.map" />
+    <None Remove="Content\bootstrap.css" />
+    <None Remove="Content\bootstrap.css.map" />
+    <None Remove="Content\bootstrap.min.css" />
+    <None Remove="Content\bootstrap.min.css.map" />
+    <None Remove="Content\Site.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\Site.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="wwwroot\img\" />
+    <Folder Include="wwwroot\fonts\" />
+  </ItemGroup>
+
+</Project>

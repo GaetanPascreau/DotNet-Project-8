@@ -36,12 +36,27 @@ namespace AppointmentService.Controllers
 
         // GET/consultantCalendars
         [HttpGet]
-        public async Task<IEnumerable<ConsultantCalendarDto>> GetAsync()
+        public async Task<ActionResult<IEnumerable<ConsultantCalendarDto>>> GetAsync()
         {
             var consultantCalendars = (await _consultantCalendarRepository.GetAllConsultantCalendars())
                                 .Select(consultantCalendar => consultantCalendar.ConsultantCalendarAsDto());
 
-            return consultantCalendars;
+            return Ok(consultantCalendars);
+        }
+
+        // GET/consultantCalendars/{consultantId}
+        [HttpGet("/ConsultantCalendars/Consultant/{consultantId}")]
+        public async Task<ActionResult<IEnumerable<ConsultantCalendarDto>>> GetByConsultantIdAsync(int consultantId)
+        {
+            var consultantCalendar = (await _consultantCalendarRepository.GetConsultantCalendarsByConsultantId(consultantId))
+                .Select(consCal => consCal.ConsultantCalendarAsDto());
+
+            if (consultantCalendar == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(consultantCalendar);
         }
 
         // GET/consultantCalendars/{id}
@@ -55,7 +70,7 @@ namespace AppointmentService.Controllers
                 return NotFound();
             }
 
-            return consultantCalendar.ConsultantCalendarAsDto();
+            return Ok(consultantCalendar.ConsultantCalendarAsDto());
         }
 
         // POST/consultantCalendars

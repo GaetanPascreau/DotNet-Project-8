@@ -33,9 +33,18 @@ namespace AppointmentService
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AppointmentService", Version = "v1" });
             });
 
+            services.AddCors(o =>
+            {
+                o.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+            });
+
             // Add services for Repositories and LocalDbContext
             services.AddScoped<IAppointmentsRepository, AppointmentRepository>();
             services.AddScoped<IConsultantCalendarRepository, ConsultantCalendarRepository>();
+            services.AddScoped<IConsultantsRepository, ConsultantRepository>();
 
             //// For Running the db in IIS
             //services.AddDbContext<CHDBContext>(options =>
@@ -68,6 +77,8 @@ namespace AppointmentService
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AppointmentService v1"));
 
             app.UseAuthorization();
+
+            app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
             {

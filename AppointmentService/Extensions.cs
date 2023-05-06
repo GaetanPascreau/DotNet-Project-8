@@ -1,6 +1,7 @@
 ﻿
 using AppointmentService.DTOs;
 using static AppointmentService.DTOs.ConsultantCalendarDtos;
+using static AppointmentService.DTOs.ConsultantDtos;
 
 namespace AppointmentService
 {
@@ -14,6 +15,11 @@ namespace AppointmentService
         public static ConsultantCalendarDto ConsultantCalendarAsDto(this ConsultantCalendar consultantCalendar)
         {
             return new ConsultantCalendarDto(consultantCalendar.Id, consultantCalendar.ConsultantId, consultantCalendar.Date, consultantCalendar.Available);
+        }
+
+        public static ConsultantDto ConsultantAsDto(this Consultant consultant)
+        {
+            return new ConsultantDto(consultant.Id, consultant.FName, consultant.LName, consultant.Speciality);
         }
     }
 }
