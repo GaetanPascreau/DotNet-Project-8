@@ -18,14 +18,14 @@ namespace AppointmentService.Repositories
 
         public async Task<List<ConsultantCalendar>> GetAllConsultantCalendars()
         {
-            var consultantCalendars = await _context.ConsultantCalendars.ToListAsync();
+            var consultantCalendars = await _context.ConsultantCalendars.AsNoTracking().ToListAsync();
             return consultantCalendars;
         }
 
         public async Task<List<ConsultantCalendar>> GetConsultantCalendarsByConsultantId(int consultantId)
         {
             //var consultantCalendar = await _context.ConsultantCalendars.SingleOrDefaultAsync(app => app.Id == id);
-            var consultantCalendars = await _context.ConsultantCalendars.Where(c => c.ConsultantId == consultantId).ToListAsync();
+            var consultantCalendars = await _context.ConsultantCalendars.AsNoTracking().Where(c => c.ConsultantId == consultantId).ToListAsync();
 
             if (consultantCalendars == null)
             {
@@ -37,7 +37,7 @@ namespace AppointmentService.Repositories
 
         public async Task<ConsultantCalendar> GetConsultantCalendarById(int id)
         {
-            var consultantCalendar = await _context.ConsultantCalendars.FirstOrDefaultAsync(c => c.Id == id);
+            var consultantCalendar = await _context.ConsultantCalendars.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
 
             if (consultantCalendar == null)
             {
@@ -74,11 +74,28 @@ namespace AppointmentService.Repositories
 
             if (consultantCalendarToUpdate is null)
             {
+                // Add an error message indicating "This schedule is no more avalaible" or di this in the Controller ?
+
                 throw new ArgumentNullException(nameof(consultantCalendar));
             }
 
-             await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
+
+        //public async Task UpdateConsultantCalendar(ConsultantCalendar consultantCalendar)
+        //{
+        //    //_context.ChangeTracker.Clear();
+
+        //    var consultantCalendarToUpdate = await _context.ConsultantCalendars.FirstOrDefaultAsync(app => app.Id == consultantCalendar.Id);
+
+        //    if (consultantCalendarToUpdate is null)
+        //    {
+                    // display a messag on the front syaing "Sorry, this schedule is no more available, please select another one."
+        //        throw new ArgumentNullException(nameof(consultantCalendar));
+        //    }
+
+        //    await _context.SaveChangesAsync();
+        //}
 
         public async Task DeleteConsultantCalendar(int id)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace AppointmentService.Models
 {
@@ -9,5 +10,9 @@ namespace AppointmentService.Models
         public string consultantName { get; set; }
 
         public List<DateTime> availableDates { get; set; }
+
+        // Tracking property to handle concurrency at the time of appointment booking
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }

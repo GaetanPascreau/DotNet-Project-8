@@ -1,3 +1,5 @@
+using Microsoft.Net.Http.Headers;
+
 namespace CalifornianHealthNewPortal
 {
     public class Program
@@ -8,6 +10,22 @@ namespace CalifornianHealthNewPortal
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            // Add HttpClient to send requests to the Identity service
+            builder.Services.AddHttpClient("IdentityService", HttpClient =>
+            {
+                HttpClient.BaseAddress = new Uri("https://localhost:32770/");
+                // do we need to add headers here?
+            });
+
+            // add CORS
+            //builder.Services.AddCors(o =>
+            //{
+            //    o.AddPolicy("CorsPolicy",
+            //        builder => builder.AllowAnyOrigin()
+            //        .AllowAnyMethod()
+            //        .AllowAnyHeader());
+            //});
 
             var app = builder.Build();
 
@@ -23,6 +41,8 @@ namespace CalifornianHealthNewPortal
             app.UseStaticFiles();
 
             app.UseRouting();
+
+           //app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 

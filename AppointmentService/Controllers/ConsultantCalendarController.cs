@@ -101,10 +101,11 @@ namespace AppointmentService.Controllers
 
             if (existingConsultantCalendar == null)
             {
-                return NotFound();
+                // that means the rowVersion has changed => the schedule was booked by someone else 
+                ModelState.AddModelError(string.Empty, "This schedule is not available anymore. Please select another one.");
+                return View();
+                //return NotFound();
             }
-
-            // Then check whether the selected date is available for the given consultant ?
 
             existingConsultantCalendar.ConsultantId = updateConsultantCalendarDto.ConsultantId;
             existingConsultantCalendar.Date = updateConsultantCalendarDto.Date;

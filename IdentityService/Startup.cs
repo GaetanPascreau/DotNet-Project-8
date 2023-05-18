@@ -32,11 +32,19 @@ namespace IdentityService
                 options.UseSqlServer(
                     Configuration.GetConnectionString("Default")));
 
-            // Add Swagger
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityService", Version = "v1" });
-            //});
+            //Add Swagger
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IdentityService", Version = "v1" });
+            });
+
+            services.AddCors(o =>
+            {
+                o.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+            });
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -54,8 +62,8 @@ namespace IdentityService
                 app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
                 // Add Swagger
-                //app.UseSwagger();
-                //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityService v1"));
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityService v1"));
             }
             else
             {
@@ -69,8 +77,10 @@ namespace IdentityService
             app.UseRouting();
 
             // Add Swagger
-            //app.UseSwagger();
-            //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityService v1"));
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityService v1"));
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();
