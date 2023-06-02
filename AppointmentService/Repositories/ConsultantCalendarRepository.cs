@@ -90,7 +90,7 @@ namespace AppointmentService.Repositories
 
         //    if (consultantCalendarToUpdate is null)
         //    {
-                    // display a messag on the front syaing "Sorry, this schedule is no more available, please select another one."
+                    // display a message on the front syaing "Sorry, this schedule is no more available, please select another one."
         //        throw new ArgumentNullException(nameof(consultantCalendar));
         //    }
 

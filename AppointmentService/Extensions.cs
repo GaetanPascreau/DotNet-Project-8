@@ -14,7 +14,7 @@ namespace AppointmentService
 
         public static ConsultantCalendarDto ConsultantCalendarAsDto(this ConsultantCalendar consultantCalendar)
         {
-            return new ConsultantCalendarDto(consultantCalendar.Id, consultantCalendar.ConsultantId, consultantCalendar.Date, consultantCalendar.Available);
+            return new ConsultantCalendarDto(consultantCalendar.Id, consultantCalendar.ConsultantId, consultantCalendar.Date, consultantCalendar.Available, consultantCalendar.RowVersion);
         }
 
         public static ConsultantDto ConsultantAsDto(this Consultant consultant)

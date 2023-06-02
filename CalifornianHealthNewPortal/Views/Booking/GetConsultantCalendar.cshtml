@@ -24,14 +24,14 @@
 <section>
     <script>
         var EventList;
-        var selectedValue;
 
-        // DISPLAY THE LIST OF CONSULTANTS IN A SELECT
+
+        // DISPLAY THE LIST OF CONSULTANTS IN A SELECT   use port = 44384 for local version VS 8080 for Docker version
         fetch("http://localhost:8080/api/Consultants").then(result => result.json()).then(data =>
         {
             data.forEach((item, index) => {
                 document.getElementById("consultant-select").insertAdjacentHTML("beforeend",
-                    `<option value="${index}">${item.fName + " " + item.lName + " - " + item.speciality}</option>`
+                    `<option value="${item.id}">${item.fName + " " + item.lName + " - " + item.speciality}</option>`
                 )
             })
         }
@@ -40,23 +40,19 @@
         // GET INFO FROM THE SELECTED CONSULTANT  
         var mySelect = document.getElementById("consultant-select");
         var consultantInfo = document.getElementById("consultant-info");
+
         mySelect.addEventListener("change", function () {
             selectedValue = mySelect.options[mySelect.selectedIndex].text; 
             consultantInfo.innerHTML = "Calendar for " + selectedValue;
 
             // GET SELECTED CONSULTANT's Id
-            var selectedConsultantId = parseInt(mySelect.value) + 1;  // THIS IS NOT THE CORRECT WAY OF GETTING THE CONSULTANT ID !!!!!
+            var selectedConsultantId = parseInt(mySelect.value);   
 
-            // GET ALL CONSULTANTCALENDAR FOR THE SELECTED CONSULTANT
+            // GET ALL CONSULTANTCALENDAR FOR THE SELECTED CONSULTANT  use port = 44384 for local version VS 8080 for Docker version
             fetch("http://localhost:8080/ConsultantCalendars/Consultant/" + selectedConsultantId).then(result => result.json()).then(data =>
             {
                 EventList = data;
                 ShowCalendar();
-                //data.forEach((item, index) => {
-                //     document.getElementById("testData").insertAdjacentHTML("beforeend",
-                //    `<p>${item.consultantId + " - " + item.date + " - " + item.available}</p>`
-                //    )
-                //})
             }
             );
         });
@@ -67,46 +63,34 @@
                 var calendarEl = document.getElementById('calendar');
                 var calendar = new FullCalendar.Calendar(calendarEl, {
                     initialView: 'dayGridMonth',
-                    dateClick: function (info) {
-                        alert('a day has been clicked!');
-                        info.dayEl.style.backgroundColor = 'red';
-                    },
                     headerToolbar:{
                         left: 'prev,next',
                         center: 'title',
                         right: 'dayGridMonth,timeGridWeek,timeGridDay'
                     },
-                   // height: 500,
-                   // aspectRatio: 1.35,
                     slotDuration : "00:30",
                     eventClick:function(info){
-                    
-                        // addd the logic for making the appointment + confirmation
 
                         // 0) try to Get all usefull informations from info :
                         console.log(info) // gives an object with all the info about the request
                         console.log(info.event._def.extendedProps.consultantId) // provides the consultantId
                         console.log(info.event._def.extendedProps.available) // provides the status (available = true)
                         console.log(info.event._def.extendedProps.eventId) // provides the Id of the clicked ConsultantCalendar
-                        //console.log(info.event._def.publicId) // provides the Id of the clicked ConsultantCalendar
                         console.log(info.event._instance.range.start.toISOString()) // provides the date of the appointment with the correct timezone (= no GMT+0200)
                         console.log(info.event._instance.range.start.toUTCString()) //provides the date in format: Wed, 31 May 2023 16:00:00 GMT
-                        
-                        // 1) check whether the clicked schedule is still available  => TO DO or do it at the time of updating the db, using Concurrency handling
+                        console.log(info.event._def.extendedProps.rowVersion)                    
 
-                        // 2) then update the available field in the ConsultantCalendar table for the selected consultant/schedule, to false
-                        //we need to call the PUT/ConsultantCalendar/id, with id = info.event._def.publicId and set "available"" to false
-                        fetch("http://localhost:8080/ConsultantCalendars/" + info.event._def.publicId, {
+                        // 1) Update the available field in the ConsultantCalendar table for the selected consultant/schedule, to false
+                        fetch("http://localhost:8080/ConsultantCalendars/" + info.event._def.publicId, { //use port = 44384 for local version VS 8080 for Docker version
                             // Adding method type
                             method: "PUT",
-                        
                             // Adding body or contents to send
                             body: JSON.stringify({
                                 consultantId: info.event._def.extendedProps.consultantId,
                                 date: info.event._instance.range.start.toISOString(),
-                                available: false
+                                available: false,
+                                rowVersion: info.event._def.extendedProps.rowVersion
                             }),
-                        
                             // Adding headers to the request
                             headers: {
                                 "Content-type": "application/json; charset=UTF-8",
@@ -118,11 +102,10 @@
                         // displaying the results to console
                         .then(json => console.log(json));
 
-                        // 3) then create the appointment in the Appointments table in the CH database
-                        fetch("http://localhost:8080/Appointments", {
+                        // 2) Create the appointment in the Appointments table in the CH database
+                    fetch("http://localhost:8080/Appointments", {  // use port = 44384 for local version VS 8080 for Docker version
                             // Adding method type
                             method:"POST",
-
                             // Adding body or contents to send
                             body: JSON.stringify({
                                 startDateTime: info.event._instance.range.start.toISOString(),
@@ -134,25 +117,29 @@
                                 "Content-type": "application/json; charset=UTF-8",
                                 "Access-Control-Allow-Origin": "https://localhost:32768"
                             }
-                            //error : function(jqXHR){
-                            //    alert("This schedule is not valaible anymore. Please select another one.");
-                            //}
                         })
-                        // converting to JSON
-                        .then(response => response.json())
-                        // displaying the results to console
+                        // 3) Check the response's status, then display an alert accordingly
+                        .then(response => {
+                            if (response.ok)
+                            {
+                                alert('Your Appointment with ' + mySelect.options[mySelect.selectedIndex].text
+                                         + ' on ' + info.event._instance.range.start.toUTCString()
+                                         + ' has been successfully scheduled !');
+                                // Return to the page to choose a consultant
+                                window.location.href = document.referrer;
+                                return response.json();
+                            }
+                            else
+                            {
+                                alert('Sorry,this schedule is no more available. Please choose another one.');
+                                // Return to the page to choose a consultant
+                                window.location.href = document.referrer;
+                            }
+                        })
                         .then(json => console.log(json));
+                    
 
-
-                        // 4) return a confirmation message on a popup window
-                        //alert('Your appointment has been successfully scheduled.');
-                        alert('Your Appointment with ' + mySelect.options[mySelect.selectedIndex].text
-                                + ' on ' + info.event._instance.range.start.toUTCString()
-                                + ' has been successfully scheduled !')
-
-                        info.el.style.backgroundColor = 'red';
-
-                        // 5) reload page to show the update or go back to home page => so user cannot click twice on the schedule  => TO DO
+                        // 4) reload page to show the update or go back to home page => so user cannot click twice on the schedule  => TO DO
 
                     },
                     events: EventList.filter(x => x.available != false).map(event=>{

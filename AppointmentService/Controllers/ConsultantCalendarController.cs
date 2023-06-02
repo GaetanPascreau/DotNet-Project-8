@@ -93,6 +93,28 @@ namespace AppointmentService.Controllers
         }
 
         // PUT/consultantCalendars/{id}
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutAsync(int id, UpdateConsultantCalendarDto updateConsultantCalendarDto)
+        //{
+        //    // First check if the appointment to update really exists in the db
+        //    var existingConsultantCalendar = await _consultantCalendarRepository.GetConsultantCalendarById(id);
+
+        //    if (existingConsultantCalendar == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    existingConsultantCalendar.ConsultantId = updateConsultantCalendarDto.ConsultantId;
+        //    existingConsultantCalendar.Date = updateConsultantCalendarDto.Date;
+        //    existingConsultantCalendar.Available = updateConsultantCalendarDto.Available;
+
+
+        //    await _consultantCalendarRepository.UpdateConsultantCalendar(existingConsultantCalendar);
+
+        //    return NoContent();
+        //}
+
+        // PUT/consultantCalendars/{id} => modified version to handle conurrency conflicts
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAsync(int id, UpdateConsultantCalendarDto updateConsultantCalendarDto)
         {
@@ -101,10 +123,16 @@ namespace AppointmentService.Controllers
 
             if (existingConsultantCalendar == null)
             {
-                // that means the rowVersion has changed => the schedule was booked by someone else 
-                ModelState.AddModelError(string.Empty, "This schedule is not available anymore. Please select another one.");
+                return NotFound();
+            }
+            // Then check whether the RowVersion is still the same since the user has requested the calendar
+            byte[] originalRowVersion = Convert.FromBase64String(updateConsultantCalendarDto.RowVersion);
+
+            if(!existingConsultantCalendar.RowVersion.SequenceEqual(originalRowVersion))
+            {
+                ModelState.AddModelError(string.Empty, "Sorry, " +
+                    "this schedule is not available anymore. Please select another one.");
                 return View();
-                //return NotFound();
             }
 
             existingConsultantCalendar.ConsultantId = updateConsultantCalendarDto.ConsultantId;
@@ -115,6 +143,7 @@ namespace AppointmentService.Controllers
             await _consultantCalendarRepository.UpdateConsultantCalendar(existingConsultantCalendar);
 
             return NoContent();
+            //return RedirectToAction(nameof(Index));
         }
 
         // DELETE/consultantCalendars/{id}
