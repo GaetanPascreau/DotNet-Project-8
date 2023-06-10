@@ -6,12 +6,13 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AppointmentService.Contracts;
 
 namespace AppointmentService.Services
 {
-    public class JwtService
+    public class JwtService : IJwtService
     {
-        private const int EPIRATION_MINUTES = 1;
+        private const int EPIRATION_MINUTES = 15;
         private readonly IConfiguration _configuration;
 
         public JwtService(IConfiguration configuration)
@@ -33,8 +34,9 @@ namespace AppointmentService.Services
 
             return new AuthenticationResponse
             {
-                token = tokenHandler.WriteToken(token),
-                Expiration = expiration
+                Token = tokenHandler.WriteToken(token),
+                Expiration = expiration,
+                UserId = user.Id
             };
         }
 

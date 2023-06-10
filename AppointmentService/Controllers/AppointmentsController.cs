@@ -1,5 +1,7 @@
 ﻿using AppointmentService.DTOs;
 using AppointmentService.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -43,6 +45,7 @@ namespace AppointmentService.Controllers
             return appointment.AppointmentAsDto();
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         // POST/appointments
         [HttpPost]
         public async Task<ActionResult<AppointmentDto>> PostAsync(CreateAppointmentDto createAppointmentDto)

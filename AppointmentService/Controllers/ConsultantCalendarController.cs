@@ -1,5 +1,7 @@
 ﻿using AppointmentService.DTOs;
 using AppointmentService.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,6 +11,7 @@ using static AppointmentService.DTOs.ConsultantCalendarDtos;
 
 namespace AppointmentService.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     [Route("ConsultantCalendars")]
     public class ConsultantCalendarController : Controller

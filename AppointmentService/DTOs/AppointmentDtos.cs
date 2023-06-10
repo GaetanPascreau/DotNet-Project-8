@@ -1,17 +1,18 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AppointmentService.DTOs
 {
-    public record AppointmentDto(int Id, DateTime StartDateTime, DateTime EndDateTime, int ConsultantId, int PatientId);
+    public record AppointmentDto(int Id, DateTime StartDateTime, DateTime EndDateTime, int ConsultantId, string PatientId);
 
     public record CreateAppointmentDto([Required][MyStartDateTime(ErrorMessage = "invalid date")] DateTime StartDateTime,
                                        [Range(1, int.MaxValue, ErrorMessage = "ConsultantId is required")] int ConsultantId,
-                                       [Range(1, int.MaxValue, ErrorMessage = "PatientId is required")] int PatientId);
+                                       string PatientId);
 
     public record UpdateAppointmentDto([Required][MyStartDateTime(ErrorMessage = "invalid date")] DateTime StartDateTime,
                                        [Range(1, int.MaxValue, ErrorMessage = "ConsultantId is required")] int ConsultantId,
-                                       [Range(1, int.MaxValue, ErrorMessage = "PatientId is required")] int PatientId);
+                                       string PatientId);
 
     
     // Add a validation for StartDatetime which cannot occur before current DateTime

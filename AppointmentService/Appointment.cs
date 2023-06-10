@@ -14,6 +14,6 @@ namespace AppointmentService
 
         public int ConsultantId { get; set; }
 
-        public int PatientId { get; set; }
+        public string PatientId { get; set; }
     }
 }

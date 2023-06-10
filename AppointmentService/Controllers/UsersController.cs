@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using AppointmentService.Services;
+using AppointmentService.Contracts;
 
 namespace AppointmentService.Controllers
 {
@@ -11,9 +12,9 @@ namespace AppointmentService.Controllers
     public class UsersController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly JwtService _jwtService;
+        private readonly IJwtService _jwtService;
 
-        public UsersController(UserManager<IdentityUser> userManager, JwtService jwtService)
+        public UsersController(UserManager<IdentityUser> userManager, IJwtService jwtService)
         {
             _userManager = userManager;
             _jwtService = jwtService;

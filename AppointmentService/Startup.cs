@@ -8,6 +8,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using AppointmentService.Contracts;
+using AppointmentService.Services;
 
 namespace AppointmentService
 {
@@ -41,7 +46,7 @@ namespace AppointmentService
             })
             .AddEntityFrameworkStores<CHDBContext>();
 
-            services.AddScoped<Services.JwtService>();
+            services.AddScoped<IJwtService, JwtService>();
 
             services.AddSwaggerGen(c =>
             {
@@ -71,6 +76,24 @@ namespace AppointmentService
 
             // Add the Database Exception Filter
             //services.AddDatabaseDeveloperPageExceptionFilter();
+
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidAudience = Configuration["Jwt:Audience"],
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                           Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])
+                           )
+                    };
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,6 +113,8 @@ namespace AppointmentService
             app.UseSwagger();
 
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AppointmentService v1"));
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

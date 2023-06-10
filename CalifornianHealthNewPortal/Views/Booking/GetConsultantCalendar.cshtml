@@ -14,7 +14,7 @@
     </div>
 </section>
 
-<DxCalendar></DxCalendar>
+@*<DxCalendar></DxCalendar>*@
 <text id="consultant-info" x="100" y="35" fill="#ffffff" style="font-size:22px; font-family: Arial; font-weight:bold;"></text>
 <br />
 <div id="calendar"></div>
@@ -49,7 +49,12 @@
             var selectedConsultantId = parseInt(mySelect.value);   
 
             // GET ALL CONSULTANTCALENDAR FOR THE SELECTED CONSULTANT  use port = 44384 for local version VS 8080 for Docker version
-            fetch("http://localhost:8080/ConsultantCalendars/Consultant/" + selectedConsultantId).then(result => result.json()).then(data =>
+            fetch("http://localhost:8080/ConsultantCalendars/Consultant/" + selectedConsultantId, {
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            })    
+            .then(result => result.json()).then(data =>
             {
                 EventList = data;
                 ShowCalendar();
@@ -94,7 +99,8 @@
                             // Adding headers to the request
                             headers: {
                                 "Content-type": "application/json; charset=UTF-8",
-                                "Access-Control-Allow-Origin": "https://localhost:32768"
+                                "Access-Control-Allow-Origin": "https://localhost:32768",
+                                "Authorization": "Bearer " + localStorage.getItem("token")
                             }
                         })
                         // converting to JSON
@@ -110,12 +116,13 @@
                             body: JSON.stringify({
                                 startDateTime: info.event._instance.range.start.toISOString(),
                                 consultantId: info.event._def.extendedProps.consultantId,
-                                patientId: 1 // Hard code it for now => we still need to add the Login module
+                                patientId: localStorage.getItem("UserId")
                             }),
                             // Adding headers to the request
                             headers: {
                                 "Content-type": "application/json; charset=UTF-8",
-                                "Access-Control-Allow-Origin": "https://localhost:32768"
+                                "Access-Control-Allow-Origin": "https://localhost:32768",
+                                "Authorization": "Bearer " + localStorage.getItem("token")
                             }
                         })
                         // 3) Check the response's status, then display an alert accordingly
@@ -133,7 +140,7 @@
                             {
                                 alert('Sorry,this schedule is no more available. Please choose another one.');
                                 // Return to the page to choose a consultant
-                                window.location.href = document.referrer;
+                                //window.location.href = document.referrer;
                             }
                         })
                         .then(json => console.log(json));

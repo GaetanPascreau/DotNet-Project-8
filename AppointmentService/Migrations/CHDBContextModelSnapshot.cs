@@ -32,8 +32,8 @@ namespace AppointmentService.Migrations
                     b.Property<DateTime>("EndDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
+                    b.Property<string>("PatientId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartDateTime")
                         .HasColumnType("datetime2");
