@@ -14,7 +14,6 @@
     </div>
 </section>
 
-@*<DxCalendar></DxCalendar>*@
 <text id="consultant-info" x="100" y="35" fill="#ffffff" style="font-size:22px; font-family: Arial; font-weight:bold;"></text>
 <br />
 <div id="calendar"></div>
@@ -27,8 +26,7 @@
 
 
         // DISPLAY THE LIST OF CONSULTANTS IN A SELECT   use port = 44384 for local version VS 8080 for Docker version
-        fetch("http://localhost:8080/api/Consultants").then(result => result.json()).then(data =>
-        {
+        fetch("http://localhost:8080/api/Consultants").then(result => result.json()).then(data => {
             data.forEach((item, index) => {
                 document.getElementById("consultant-select").insertAdjacentHTML("beforeend",
                     `<option value="${item.id}">${item.fName + " " + item.lName + " - " + item.speciality}</option>`
@@ -37,125 +35,132 @@
         }
         );
 
-        // GET INFO FROM THE SELECTED CONSULTANT  
+        // DISPLAY INFO FROM THE SELECTED CONSULTANT
         var mySelect = document.getElementById("consultant-select");
         var consultantInfo = document.getElementById("consultant-info");
 
         mySelect.addEventListener("change", function () {
-            selectedValue = mySelect.options[mySelect.selectedIndex].text; 
+            selectedValue = mySelect.options[mySelect.selectedIndex].text;
             consultantInfo.innerHTML = "Calendar for " + selectedValue;
 
             // GET SELECTED CONSULTANT's Id
-            var selectedConsultantId = parseInt(mySelect.value);   
+            var selectedConsultantId = parseInt(mySelect.value);
 
             // GET ALL CONSULTANTCALENDAR FOR THE SELECTED CONSULTANT  use port = 44384 for local version VS 8080 for Docker version
+            // Include Bearer token for Authorization in the Headers
             fetch("http://localhost:8080/ConsultantCalendars/Consultant/" + selectedConsultantId, {
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
-            })    
-            .then(result => result.json()).then(data =>
-            {
-                EventList = data;
-                ShowCalendar();
-            }
-            );
+            })
+                .then(result => result.json()).then(data => {
+                    EventList = data;
+                    ShowCalendar();
+                }
+                );
         });
 
-        
+
         // DISPLAY THE FULL CALENDAR WITH AVAILABLE DATES FOR THE SELECTED CONSULTANT
-        function ShowCalendar(){
-                var calendarEl = document.getElementById('calendar');
-                var calendar = new FullCalendar.Calendar(calendarEl, {
-                    initialView: 'dayGridMonth',
-                    headerToolbar:{
-                        left: 'prev,next',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                    },
-                    slotDuration : "00:30",
-                    eventClick:function(info){
+        function ShowCalendar() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                slotDuration: "00:30",
+                eventClick: function (info) {
 
-                        // 0) try to Get all usefull informations from info :
-                        console.log(info) // gives an object with all the info about the request
-                        console.log(info.event._def.extendedProps.consultantId) // provides the consultantId
-                        console.log(info.event._def.extendedProps.available) // provides the status (available = true)
-                        console.log(info.event._def.extendedProps.eventId) // provides the Id of the clicked ConsultantCalendar
-                        console.log(info.event._instance.range.start.toISOString()) // provides the date of the appointment with the correct timezone (= no GMT+0200)
-                        console.log(info.event._instance.range.start.toUTCString()) //provides the date in format: Wed, 31 May 2023 16:00:00 GMT
-                        console.log(info.event._def.extendedProps.rowVersion)                    
+                    // 0) try to Get all usefull informations from info :
+                    console.log(info) // gives an object with all the info about the request
+                    console.log(info.event._def.extendedProps.consultantId) // provides the consultantId
+                    console.log(info.event._def.extendedProps.available) // provides the status (available = true)
+                    console.log(info.event._def.extendedProps.eventId) // provides the Id of the clicked ConsultantCalendar
+                    console.log(info.event._instance.range.start.toISOString()) // provides the date of the appointment with the correct timezone (= no GMT+0200)
+                    console.log(info.event._instance.range.start.toUTCString()) //provides the date in format: Wed, 31 May 2023 16:00:00 GMT
+                    console.log(info.event._def.extendedProps.rowVersion)
 
-                        // 1) Update the available field in the ConsultantCalendar table for the selected consultant/schedule, to false
-                        fetch("http://localhost:8080/ConsultantCalendars/" + info.event._def.publicId, { //use port = 44384 for local version VS 8080 for Docker version
-                            // Adding method type
-                            method: "PUT",
-                            // Adding body or contents to send
-                            body: JSON.stringify({
-                                consultantId: info.event._def.extendedProps.consultantId,
-                                date: info.event._instance.range.start.toISOString(),
-                                available: false,
-                                rowVersion: info.event._def.extendedProps.rowVersion
-                            }),
-                            // Adding headers to the request
-                            headers: {
-                                "Content-type": "application/json; charset=UTF-8",
-                                "Access-Control-Allow-Origin": "https://localhost:32768",
-                                "Authorization": "Bearer " + localStorage.getItem("token")
-                            }
-                        })
+                    // 1) Update the available field in the ConsultantCalendar table for the selected consultant/schedule, to false
+                    fetch("http://localhost:8080/ConsultantCalendars/" + info.event._def.publicId, { //use port = 44384 for local version VS 8080 for Docker version
+                        // Adding method type
+                        method: "PUT",
+                        // Adding body or contents to send
+                        body: JSON.stringify({
+                            consultantId: info.event._def.extendedProps.consultantId,
+                            date: info.event._instance.range.start.toISOString(),
+                            available: false,
+                            rowVersion: info.event._def.extendedProps.rowVersion
+                        }),
+                        // Adding headers to the request
+                        headers: {
+                            "Content-type": "application/json; charset=UTF-8",
+                            "Access-Control-Allow-Origin": "https://localhost:32768",
+                            "Authorization": "Bearer " + localStorage.getItem("token")
+                        }
+                    })
                         // converting to JSON
                         .then(response => response.json())
                         // displaying the results to console
                         .then(json => console.log(json));
 
-                        // 2) Create the appointment in the Appointments table in the CH database
+                    // 2) Create the appointment in the Appointments table in the CH database
                     fetch("http://localhost:8080/Appointments", {  // use port = 44384 for local version VS 8080 for Docker version
-                            // Adding method type
-                            method:"POST",
-                            // Adding body or contents to send
-                            body: JSON.stringify({
-                                startDateTime: info.event._instance.range.start.toISOString(),
-                                consultantId: info.event._def.extendedProps.consultantId,
-                                patientId: localStorage.getItem("UserId")
-                            }),
-                            // Adding headers to the request
-                            headers: {
-                                "Content-type": "application/json; charset=UTF-8",
-                                "Access-Control-Allow-Origin": "https://localhost:32768",
-                                "Authorization": "Bearer " + localStorage.getItem("token")
-                            }
-                        })
+                        // Adding method type
+                        method: "POST",
+                        // Adding body or contents to send
+                        body: JSON.stringify({
+                            startDateTime: info.event._instance.range.start.toISOString(),
+                            consultantId: info.event._def.extendedProps.consultantId,
+                            patientId: localStorage.getItem("UserId")
+                        }),
+                        // Adding headers to the request
+                        headers: {
+                            "Content-type": "application/json; charset=UTF-8",
+                            "Access-Control-Allow-Origin": "https://localhost:32768",
+                            "Authorization": "Bearer " + localStorage.getItem("token")
+                        }
+                    })
                         // 3) Check the response's status, then display an alert accordingly
                         .then(response => {
-                            if (response.ok)
-                            {
+                            if (response.ok) {
                                 alert('Your Appointment with ' + mySelect.options[mySelect.selectedIndex].text
-                                         + ' on ' + info.event._instance.range.start.toUTCString()
-                                         + ' has been successfully scheduled !');
-                                // Return to the page to choose a consultant
-                                window.location.href = document.referrer;
+                                    + ' on ' + info.event._instance.range.start.toUTCString()
+                                    + ' has been successfully scheduled !');
+                                // Return to the home page
+                                window.location.href = 'https://localhost:32768/';
                                 return response.json();
                             }
-                            else
-                            {
+                            else {
                                 alert('Sorry,this schedule is no more available. Please choose another one.');
-                                // Return to the page to choose a consultant
-                                //window.location.href = document.referrer;
+                                location.reload(location.href);
+                                //// update consultantCalendar  => doesn't work
+                                //fetch("http://localhost:8080/ConsultantCalendars/Consultant/" + selectedConsultantId, {
+                                //    headers: {
+                                //        "Authorization": "Bearer " + localStorage.getItem("token")
+                                //    }
+                                //})
+                                //.then(result => result.json()).then(data => {
+                                //    EventList = data;
+                                //    ShowCalendar();
+                                //});
                             }
                         })
                         .then(json => console.log(json));
-                    
 
-                        // 4) reload page to show the update or go back to home page => so user cannot click twice on the schedule  => TO DO
 
-                    },
-                    events: EventList.filter(x => x.available != false).map(event=>{
-                        let endDate = new Date(event.date);
-                        endDate.setMinutes(endDate.getMinutes()+30);
-                        return {...event , allDay:false ,forceEventDuration : true , defaultTimedEventDuration :"00:30" , end : endDate , id : event.id , eventId : event.id };
-                    })
-                });
-                calendar.render();
+                    // 4) reload page to show the update or go back to home page => so user cannot click twice on the schedule  => TO DO
+
+                },
+                events: EventList.filter(x => x.available != false).map(event => {
+                    let endDate = new Date(event.date);
+                    endDate.setMinutes(endDate.getMinutes() + 30);
+                    return { ...event, allDay: false, forceEventDuration: true, defaultTimedEventDuration: "00:30", end: endDate, id: event.id, eventId: event.id };
+                })
+            });
+            calendar.render();
         }
     </script>
 </section>

@@ -40,7 +40,8 @@
         .then(response => {
             if (response.ok) {
                 alert('Your have successfully logged in !');
-                // Return to the Home page 
+                // Return to the Home page
+                //window.location.href = 'https://localhost:32768/';
                 //window.location.href = document.referrer;
                 return response.json();
             }
@@ -54,6 +55,7 @@
                 localStorage.setItem("token", json.token) 
                 localStorage.setItem("UserId", json.userId)
                 //window.location.href = document.referrer
+                window.location.href = 'https://localhost:32768/';
             });
     }
     

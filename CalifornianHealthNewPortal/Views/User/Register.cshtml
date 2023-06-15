@@ -11,15 +11,97 @@
     <input type="text" class="form-control" id="username">
   </div>
     <br />
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="text" class="form-control" id="email">
+    </div>
+    <br />
   <div class="mb-3">
     <label for="password" class="form-label">Password</label>
     <input type="password" class="form-control" id="password">
   </div>
   <div class="mb-3">
-      <label for="password" class="form-label">Confirm Password</label>
-      <input type="password" class="form-control" id="password">
+      <label for="confirmpassword" class="form-label">Confirm Password</label>
+        <input type="password" class="form-control" id="confirmpassword">
   </div>
   <br />
-  <button type="submit" class="btn btn-primary" onclick="RegisterUser()">Submit</button>
+  <button type="button" class="btn btn-primary" onclick="RegisterUser()">Submit</button>
 </form>
 <br />
+
+<script>
+    function RegisterUser() {
+        var username = document.getElementById("username").value;
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("password").value;
+        var confirmpassword = document.getElementById("confirmpassword").value;
+
+        if(password == confirmpassword){
+            fetch("http://localhost:8080/api/Users/", { //use port = 44384 for local version VS 8080 for Docker version
+                // Adding method type
+                method: "POST",
+                // Adding body or contents to send
+                body: JSON.stringify({
+                    userName: username,
+                    email: email,
+                    password: password,
+                }),
+                // Adding headers to the request
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8",
+                    "Access-Control-Allow-Origin": "https://localhost:32772" //port:32772 (Docker) or port : 44365 (local)
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.userName != null){
+                    alert('Your have successfully Registered !');
+                    window.location.href = 'https://localhost:32768/User/Login';
+                }
+                else {
+                    console.log(data);
+                    data.forEach((item, index) => {
+                            alert(data[index].description);
+                    });
+                }
+            });
+          
+
+            //SOLUTION 1 : (I can retrieve the error code and description, but the response is always successfull, even with existing data)
+            //.then(response => response.json())
+            //.then(data => {
+            //    console.log(data);
+            //    alert('Your have successfully Registered !');
+            //})
+            //.catch(error => {
+            //    console.error('Error', error);
+            //});
+
+            //SOLUTION 2 : (I can't retrieve the error code or description)
+            //.then(response => {
+            //    if (response.ok) {
+            //        alert('Your have successfully Registered !');
+            //        window.location.href = 'https://localhost:32768/User/Login';
+            //        return response.json();
+            //    }
+            //    else {
+            //        console.log("it did not work");
+            //        console.log(response.statusText);
+            //        console.log(response.headers);
+            //            console.log(response.headers.values);
+            //        console.log(response.body);
+            //            console.log(response.text);
+            //            console.log(Error);
+            //            console.log(Error.toString);
+     
+            //        alert('Your credentials are invalid !');
+            //        //window.location.href = 'https://localhost:32768/User/Register';
+            //    }
+            //});
+        }
+        else {
+             alert('Passwords do not match !');
+        }
+    }
+
+</script>
