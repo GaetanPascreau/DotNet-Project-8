@@ -74,28 +74,11 @@ namespace AppointmentService.Repositories
 
             if (consultantCalendarToUpdate is null)
             {
-                // Add an error message indicating "This schedule is no more avalaible" or di this in the Controller ?
-
                 throw new ArgumentNullException(nameof(consultantCalendar));
             }
 
             await _context.SaveChangesAsync();
         }
-
-        //public async Task UpdateConsultantCalendar(ConsultantCalendar consultantCalendar)
-        //{
-        //    //_context.ChangeTracker.Clear();
-
-        //    var consultantCalendarToUpdate = await _context.ConsultantCalendars.FirstOrDefaultAsync(app => app.Id == consultantCalendar.Id);
-
-        //    if (consultantCalendarToUpdate is null)
-        //    {
-                    // display a message on the front syaing "Sorry, this schedule is no more available, please select another one."
-        //        throw new ArgumentNullException(nameof(consultantCalendar));
-        //    }
-
-        //    await _context.SaveChangesAsync();
-        //}
 
         public async Task DeleteConsultantCalendar(int id)
         {

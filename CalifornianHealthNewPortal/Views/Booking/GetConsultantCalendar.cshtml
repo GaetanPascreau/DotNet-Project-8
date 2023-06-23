@@ -87,12 +87,12 @@
 
                     // 0) try to Get all usefull informations from info :
                     console.log(info) // gives an object with all the info about the request
-                    console.log(info.event._def.extendedProps.consultantId) // provides the consultantId
-                    console.log(info.event._def.extendedProps.available) // provides the status (available = true)
-                    console.log(info.event._def.extendedProps.eventId) // provides the Id of the clicked ConsultantCalendar
-                    console.log(info.event._instance.range.start.toISOString()) // provides the date of the appointment with the correct timezone (= no GMT+0200)
-                    console.log(info.event._instance.range.start.toUTCString()) //provides the date in format: Wed, 31 May 2023 16:00:00 GMT
-                    console.log(info.event._def.extendedProps.rowVersion)
+                    console.log(info.event._def.extendedProps.consultantId); // provides the consultantId
+                    console.log(info.event._def.extendedProps.available); // provides the status (available = true)
+                    console.log(info.event._def.extendedProps.eventId); // provides the Id of the clicked ConsultantCalendar
+                    console.log(info.event._instance.range.start.toISOString()); // provides the date of the appointment with the correct timezone (= no GMT+0200)
+                    console.log(info.event._instance.range.start.toUTCString()); //provides the date in format: Wed, 31 May 2023 16:00:00 GMT
+                    console.log(info.event._def.extendedProps.rowVersion);
 
                     // 1) Update the available field in the ConsultantCalendar table for the selected consultant/schedule, to false
                     fetch("http://localhost:8080/ConsultantCalendars/" + info.event._def.publicId, { //use port = 44384 for local version VS 8080 for Docker version

@@ -39,8 +39,20 @@
                             @*   <li class=""><a href="~/Home/Index/#service">Services</a></li>
                                 <li class=""><a href="~/Home/Index/#doctor-team">Our Team</a></li>
                                 <li class=""><a href="~/Home/Index/#contact">Contact</a></li>*@
-                                <li class=""><a href="~/User/Register">Register</a></li>
+                                <li class="active" id="registerStatus"></li>
+                                <li class="active" id="loginStatus"></li>
+                                @*<li class=""><a href="~/User/Register">Register</a></li>
                                 <li class=""><a href="~/User/Login">Login</a></li>
+                                <li class=""><a href="~/User/Login">Logout</a></li>*@
+                               @* @if(User.Identity.IsAuthenticated)
+                                {
+                                    <li class=""><a href="~/User/Login">Logout</a></li>
+                                }
+                                else
+                                {
+                                    <li class=""><a href="~/User/Register">Register</a></li>
+                                    <li class=""><a href="~/User/Login">Login</a></li>
+                                }*@
                             </ul>
                         </div>
                     </div>
@@ -120,11 +132,55 @@
     </footer>
     <!--/ footer-->
 
+    <script>
+        var isLoggedIn = localStorage.loggedIn ? localStorage.getItem('loggedIn') : false
+        var loginStatusDiv = document.getElementById("loginStatus");
+        var registerStatusDiv = document.getElementById("registerStatus");
+        var loginLink = document.createElement("a");
+        var registerLink = document.createElement("a");
+        console.log("isLoggedIn = " + isLoggedIn);
+
+        if(isLoggedIn) {
+            registerLink.href = "#";
+            registerLink.textContent = "Welcome !";
+            loginLink.href = "#";
+            loginLink.textContent = "Logout";
+            loginLink.addEventListener("click", function () {
+                // clean Local Storage
+                localStorage.removeItem("UserId");
+                localStorage.removeItem("token");
+                localStorage.removeItem("loggedIn");
+                  isLoggedIn = false;
+                // Redirect to Home page
+                window.location.href = 'https://localhost:32768';
+            });
+        } else {
+            registerLink.href = "#";
+            registerLink.textContent = "Register";
+            registerLink.addEventListener("click", function() {
+                window.location.href = 'https://localhost:32768/User/Register';
+            });
+            loginLink.href = "#";
+            loginLink.textContent = "Login";
+            loginLink.addEventListener("click", function () {
+                window.location.href = 'https://localhost:32768/User/Login';
+                // update the login status to change the displayed links in the banner
+                isLoggedIn = true;
+            });
+            //// update the login status to change the displayed links in the banner
+            //isLoggedIn = true;
+        }
+        registerStatusDiv.appendChild(registerLink);
+        loginStatusDiv.appendChild(loginLink);
+        console.log("isLoggedIn = " + isLoggedIn);
+    </script>
+
     <script src="~/js/jquery.min.js"></script>
     <script src="~/js/jquery.easing.min.js"></script>
     <script src="~/js/bootstrap.min.js"></script>
     <script src="~/js/custom.js"></script>
-    <script src="~/contactform/contactform.js"></script>
+    @*<script src="~/contactform/contactform.js"></script>*@
     @RenderSection("scripts", required: false)
+  
 </body>
 </html>

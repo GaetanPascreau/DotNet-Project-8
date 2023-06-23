@@ -58,6 +58,8 @@
             .then(json => {
                 localStorage.setItem("token", json.token) 
                 localStorage.setItem("UserId", json.userId)
+                localStorage.setItem("loggedIn", true)
+                window.isLoggedIn = true
                 //window.location.href = document.referrer
                 window.location.href = 'https://localhost:32768/';
             });
