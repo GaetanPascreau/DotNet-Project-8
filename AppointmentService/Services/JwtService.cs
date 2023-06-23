@@ -12,7 +12,7 @@ namespace AppointmentService.Services
 {
     public class JwtService : IJwtService
     {
-        private const int EPIRATION_MINUTES = 15;
+        private const int EPIRATION_MINUTES = 360;
         private readonly IConfiguration _configuration;
 
         public JwtService(IConfiguration configuration)

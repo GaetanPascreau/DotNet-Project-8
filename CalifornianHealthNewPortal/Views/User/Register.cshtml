@@ -2,31 +2,35 @@
     ViewBag.Title = "Register";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<br />
-<h1>REGISTER</h1>
-<br />
-<form>
-  <div class="mb-3">
-    <label for="usernanme" class="form-label">Username</label>
-    <input type="text" class="form-control" id="username">
-  </div>
+
+<div class="container">
     <br />
-    <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="text" class="form-control" id="email">
-    </div>
+    <h1>REGISTER</h1>
     <br />
-  <div class="mb-3">
-    <label for="password" class="form-label">Password</label>
-    <input type="password" class="form-control" id="password">
-  </div>
-  <div class="mb-3">
-      <label for="confirmpassword" class="form-label">Confirm Password</label>
-        <input type="password" class="form-control" id="confirmpassword">
-  </div>
-  <br />
-  <button type="button" class="btn btn-primary" onclick="RegisterUser()">Submit</button>
-</form>
+    <form>
+        <div class="mb-3">
+          <label for="usernanme" class="form-label">Username</label>
+          <input type="text" class="form-control" id="username">
+        </div>
+          <br />
+          <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="text" class="form-control" id="email">
+          </div>
+          <br />
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password">
+        </div>
+        <div class="mb-3">
+            <label for="confirmpassword" class="form-label">Confirm Password</label>
+              <input type="password" class="form-control" id="confirmpassword">
+        </div>
+        <br />
+        <button type="button" class="btn btn-primary" onclick="RegisterUser()">Submit</button>
+    </form>
+</div>
+
 <br />
 
 <script>
@@ -49,14 +53,14 @@
                 // Adding headers to the request
                 headers: {
                     "Content-type": "application/json; charset=UTF-8",
-                    "Access-Control-Allow-Origin": "https://localhost:32772" //port:32772 (Docker) or port : 44365 (local)
+                    "Access-Control-Allow-Origin": "https://localhost:32768" //port:32772 (Docker) or port : 44365 (local)
                 }
             })
             .then(response => response.json())
             .then(data => {
                 if(data.userName != null){
                     alert('Your have successfully Registered !');
-                    window.location.href = 'https://localhost:32768/User/Login';
+                        window.location.href = 'https://localhost:32768/User/Login';
                 }
                 else {
                     console.log(data);

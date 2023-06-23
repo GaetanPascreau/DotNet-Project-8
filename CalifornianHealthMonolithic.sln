@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalifornianHealthMonolithic", "CalifornianHealthMonolithic\CalifornianHealthMonolithic.csproj", "{5FD042A3-4E83-4972-B98A-48CC6157F165}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppointmentService", "AppointmentService\AppointmentService.csproj", "{C464B74E-3597-4A11-A438-3BA7AC569B77}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalifornianHealthNewPortal", "CalifornianHealthNewPortal\CalifornianHealthNewPortal.csproj", "{97E6A554-B81D-49BA-9FA3-D93B4E0576BE}"
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5FD042A3-4E83-4972-B98A-48CC6157F165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5FD042A3-4E83-4972-B98A-48CC6157F165}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5FD042A3-4E83-4972-B98A-48CC6157F165}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5FD042A3-4E83-4972-B98A-48CC6157F165}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C464B74E-3597-4A11-A438-3BA7AC569B77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C464B74E-3597-4A11-A438-3BA7AC569B77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C464B74E-3597-4A11-A438-3BA7AC569B77}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -2,23 +2,27 @@
     ViewBag.Title = "Login";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<br />
-<h1>LOG IN</h1>
-<br />
-<form>
-  <div class="mb-3">
-    <label for="usernanme" class="form-label">Username</label>
-    <input type="text" class="form-control" id="username">
-  </div>
+
+<div class="container">
     <br />
-  <div class="mb-3">
-    <label for="password" class="form-label">Password</label>
-    <input type="password" class="form-control" id="password">
-  </div>
+    <h1>LOG IN</h1>
     <br />
-  <button type="button" class="btn btn-primary" onclick="LoginUser()">Submit</button>
-</form>
-<br />
+    <form>
+      <div class="mb-3">
+        <label for="usernanme" class="form-label">Username</label>
+        <input type="text" class="form-control" id="username">
+      </div>
+        <br />
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password">
+      </div>
+        <br />
+      <button type="button" class="btn btn-primary" onclick="LoginUser()">Submit</button>
+    </form>
+    <br />
+</div>
+
 <script>
     function LoginUser() {
         var username = document.getElementById("username").value;
@@ -34,14 +38,14 @@
             // Adding headers to the request
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
-                "Access-Control-Allow-Origin": "https://localhost:32772" //port:32772 (Docker) or port : 44365 (local)
+                "Access-Control-Allow-Origin": "https://localhost:32768" //port:32772 (Docker) or port : 44365 (local)
             }
         })
         .then(response => {
             if (response.ok) {
                 alert('Your have successfully logged in !');
                 // Return to the Home page
-                //window.location.href = 'https://localhost:32768/';
+                    //window.location.href = 'https://localhost:32768/';
                 //window.location.href = document.referrer;
                 return response.json();
             }

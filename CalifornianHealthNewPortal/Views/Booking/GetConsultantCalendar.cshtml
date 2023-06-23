@@ -38,26 +38,37 @@
         // DISPLAY INFO FROM THE SELECTED CONSULTANT
         var mySelect = document.getElementById("consultant-select");
         var consultantInfo = document.getElementById("consultant-info");
+        var bearerToken = localStorage.getItem("token");
 
         mySelect.addEventListener("change", function () {
-            selectedValue = mySelect.options[mySelect.selectedIndex].text;
-            consultantInfo.innerHTML = "Calendar for " + selectedValue;
+            if(bearerToken == null)
+            {
+                alert('You must login first in order to schedule an appointment.');
+                window.location.href = 'https://localhost:32768/User/Login';
+            }
+            else
+            {
+                selectedValue = mySelect.options[mySelect.selectedIndex].text;
+                consultantInfo.innerHTML = "Calendar for " + selectedValue;
 
-            // GET SELECTED CONSULTANT's Id
-            var selectedConsultantId = parseInt(mySelect.value);
+                // GET SELECTED CONSULTANT's Id
+                var selectedConsultantId = parseInt(mySelect.value);
 
-            // GET ALL CONSULTANTCALENDAR FOR THE SELECTED CONSULTANT  use port = 44384 for local version VS 8080 for Docker version
-            // Include Bearer token for Authorization in the Headers
-            fetch("http://localhost:8080/ConsultantCalendars/Consultant/" + selectedConsultantId, {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            })
-                .then(result => result.json()).then(data => {
-                    EventList = data;
-                    ShowCalendar();
-                }
-                );
+                // GET ALL CONSULTANTCALENDAR FOR THE SELECTED CONSULTANT  use port = 44384 for local version VS 8080 for Docker version
+                // Include Bearer token for Authorization in the Headers
+                fetch("http://localhost:8080/ConsultantCalendars/Consultant/" + selectedConsultantId, {
+                    headers: {
+                        "Authorization": "Bearer " + bearerToken
+                    }
+                })
+                    .then(result => result.json()).then(data => {
+                        EventList = data;
+                        ShowCalendar();
+                    }
+                    );
+            }
+
+            
         });
 
 
