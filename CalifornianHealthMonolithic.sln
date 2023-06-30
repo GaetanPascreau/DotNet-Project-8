@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppointmentService", "Appoi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalifornianHealthNewPortal", "CalifornianHealthNewPortal\CalifornianHealthNewPortal.csproj", "{97E6A554-B81D-49BA-9FA3-D93B4E0576BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalifornianHealthTests", "CalifornianHealthTests\CalifornianHealthTests.csproj", "{4B2BFC8A-9B81-40BD-9333-B9B5FF9DFB59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{97E6A554-B81D-49BA-9FA3-D93B4E0576BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97E6A554-B81D-49BA-9FA3-D93B4E0576BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97E6A554-B81D-49BA-9FA3-D93B4E0576BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B2BFC8A-9B81-40BD-9333-B9B5FF9DFB59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B2BFC8A-9B81-40BD-9333-B9B5FF9DFB59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B2BFC8A-9B81-40BD-9333-B9B5FF9DFB59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B2BFC8A-9B81-40BD-9333-B9B5FF9DFB59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

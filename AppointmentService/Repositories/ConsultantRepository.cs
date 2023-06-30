@@ -73,6 +73,7 @@ namespace AppointmentService.Repositories
             }
 
             _context.Consultants.Remove(consultantToDelete);
+            await _context.SaveChangesAsync();
         }
     }
 }

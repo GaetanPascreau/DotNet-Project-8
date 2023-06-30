@@ -74,6 +74,10 @@ namespace AppointmentService.Repositories
                 throw new ArgumentNullException(nameof(consultantCalendar));
             }
 
+            consultantCalendarToUpdate.ConsultantId = consultantCalendar.Id;
+            consultantCalendarToUpdate.Date = consultantCalendar.Date;
+            consultantCalendarToUpdate.Available = consultantCalendar.Available;
+
             await _context.SaveChangesAsync();
         }
 
