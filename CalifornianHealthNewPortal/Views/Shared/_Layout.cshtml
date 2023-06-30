@@ -32,27 +32,11 @@
                         <div class="collapse navbar-collapse navbar-right" id="myNavbar">
                             <ul class="nav navbar-nav">
                                 <li class="active"><a href="~/Home/Index">Home</a></li>
-@*                                <li class="active"><a href="#banner">Home</a></li>
-*@                                <li class=""><a href="#service">Services</a></li>
+                                <li class=""><a href="#service">Services</a></li>
                                 <li class=""><a href="#doctor-team">Our Team</a></li>
                                 <li class=""><a href="#contact">Contact</a></li>
-                            @*   <li class=""><a href="~/Home/Index/#service">Services</a></li>
-                                <li class=""><a href="~/Home/Index/#doctor-team">Our Team</a></li>
-                                <li class=""><a href="~/Home/Index/#contact">Contact</a></li>*@
                                 <li class="active" id="registerStatus"></li>
                                 <li class="active" id="loginStatus"></li>
-                                @*<li class=""><a href="~/User/Register">Register</a></li>
-                                <li class=""><a href="~/User/Login">Login</a></li>
-                                <li class=""><a href="~/User/Login">Logout</a></li>*@
-                               @* @if(User.Identity.IsAuthenticated)
-                                {
-                                    <li class=""><a href="~/User/Login">Logout</a></li>
-                                }
-                                else
-                                {
-                                    <li class=""><a href="~/User/Register">Register</a></li>
-                                    <li class=""><a href="~/User/Login">Login</a></li>
-                                }*@
                             </ul>
                         </div>
                     </div>
@@ -138,7 +122,7 @@
         var registerStatusDiv = document.getElementById("registerStatus");
         var loginLink = document.createElement("a");
         var registerLink = document.createElement("a");
-        console.log("isLoggedIn = " + isLoggedIn);
+        //console.log("isLoggedIn = " + isLoggedIn);
 
         if(isLoggedIn) {
             registerLink.href = "#";
@@ -167,19 +151,16 @@
                 // update the login status to change the displayed links in the banner
                 isLoggedIn = true;
             });
-            //// update the login status to change the displayed links in the banner
-            //isLoggedIn = true;
         }
         registerStatusDiv.appendChild(registerLink);
         loginStatusDiv.appendChild(loginLink);
-        console.log("isLoggedIn = " + isLoggedIn);
+        //console.log("isLoggedIn = " + isLoggedIn);
     </script>
 
     <script src="~/js/jquery.min.js"></script>
     <script src="~/js/jquery.easing.min.js"></script>
     <script src="~/js/bootstrap.min.js"></script>
     <script src="~/js/custom.js"></script>
-    @*<script src="~/contactform/contactform.js"></script>*@
     @RenderSection("scripts", required: false)
   
 </body>

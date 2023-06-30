@@ -15,7 +15,7 @@ namespace AppointmentService
 
         public bool Available { get; set; }
 
-        //Tracking property to handle concurrency at the time of appointment booking
+        //Tracking property to handle concurrency conflicts at the time of appointment booking
         [Timestamp]
         public byte[] RowVersion { get; set; }
     }

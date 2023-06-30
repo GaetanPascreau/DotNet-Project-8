@@ -19,13 +19,13 @@ namespace CalifornianHealthNewPortal.Controllers
                 var httpClient = _httpClientFactory.CreateClient("IdentityService");
 
                 var todoItemJson = new StringContent(
-                    JsonSerializer.Serialize(username),  // and password ??
+                    JsonSerializer.Serialize(username),
                     Encoding.UTF8,
-                    Application.Json); // using static System.Net.Mime.MediaTypeNames;
+                    Application.Json);
 
                 using var httpResponseMessage =
-                    await httpClient.PostAsync("Identity/Account/Login", todoItemJson);  // username and password ??
-                /*here are the full url : https://localhost:32770/Identity/Account/Login     https://localhost:32770/Identity/Account/Register*/
+                    await httpClient.PostAsync("Identity/Account/Login", todoItemJson);
+                /*here are the full url : https://localhost:32768/Identity/Account/Login     https://localhost:32768/Identity/Account/Register*/
 
                 httpResponseMessage.EnsureSuccessStatusCode();
             }

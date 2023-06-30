@@ -1,5 +1,4 @@
-﻿using AppointmentService.DTOs;
-using AppointmentService.Repositories;
+﻿using AppointmentService.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

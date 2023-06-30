@@ -1,5 +1,4 @@
-﻿
-using AppointmentService.DTOs;
+﻿using AppointmentService.DTOs;
 using static AppointmentService.DTOs.ConsultantCalendarDtos;
 using static AppointmentService.DTOs.ConsultantDtos;
 

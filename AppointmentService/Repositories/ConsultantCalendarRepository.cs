@@ -24,7 +24,6 @@ namespace AppointmentService.Repositories
 
         public async Task<List<ConsultantCalendar>> GetConsultantCalendarsByConsultantId(int consultantId)
         {
-            //var consultantCalendar = await _context.ConsultantCalendars.SingleOrDefaultAsync(app => app.Id == id);
             var consultantCalendars = await _context.ConsultantCalendars.AsNoTracking().Where(c => c.ConsultantId == consultantId).ToListAsync();
 
             if (consultantCalendars == null)
@@ -68,8 +67,6 @@ namespace AppointmentService.Repositories
 
         public async Task UpdateConsultantCalendar(ConsultantCalendar consultantCalendar)
         {
-            //_context.ChangeTracker.Clear();
-
             var consultantCalendarToUpdate = await _context.ConsultantCalendars.FirstOrDefaultAsync(app => app.Id == consultantCalendar.Id);
 
             if (consultantCalendarToUpdate is null)

@@ -27,7 +27,7 @@
     function LoginUser() {
         var username = document.getElementById("username").value;
         var password = document.getElementById("password").value;
-        fetch("http://localhost:8080/api/Users/BearerToken/", { //use port = 44384 for local version VS 8080 for Docker version
+        fetch("http://localhost:8080/api/Users/BearerToken/", { // use port = 44384 with local db VS 8080 with Docker db
             // Adding method type
             method: "POST",
             // Adding body or contents to send
@@ -38,21 +38,16 @@
             // Adding headers to the request
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
-                "Access-Control-Allow-Origin": "https://localhost:32768" //port:32772 (Docker) or port : 44365 (local)
+                "Access-Control-Allow-Origin": "https://localhost:32768" //port:32768 (Docker) or port : 44365 (local)
             }
         })
         .then(response => {
             if (response.ok) {
                 alert('Your have successfully logged in !');
-                // Return to the Home page
-                    //window.location.href = 'https://localhost:32768/';
-                //window.location.href = document.referrer;
                 return response.json();
             }
             else {
                 alert('Your credentials are invalid !');
-                // Return to the home page 
-                //window.location.href = document.referrer;
             }
         })
             .then(json => {
@@ -60,7 +55,6 @@
                 localStorage.setItem("UserId", json.userId)
                 localStorage.setItem("loggedIn", true)
                 window.isLoggedIn = true
-                //window.location.href = document.referrer
                 window.location.href = 'https://localhost:32768/';
             });
     }

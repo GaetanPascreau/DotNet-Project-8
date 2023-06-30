@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using AppointmentService.Services;
 using AppointmentService.Contracts;
 
 namespace AppointmentService.Controllers

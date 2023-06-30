@@ -25,7 +25,7 @@
         var EventList;
 
 
-        // DISPLAY THE LIST OF CONSULTANTS IN A SELECT   use port = 44384 for local version VS 8080 for Docker version
+        // DISPLAY THE LIST OF CONSULTANTS IN A SELECT =>  use port = 44384 with local db VS 8080 with Docker db
         fetch("http://localhost:8080/api/Consultants").then(result => result.json()).then(data => {
             data.forEach((item, index) => {
                 document.getElementById("consultant-select").insertAdjacentHTML("beforeend",
@@ -54,7 +54,7 @@
                 // GET SELECTED CONSULTANT's Id
                 var selectedConsultantId = parseInt(mySelect.value);
 
-                // GET ALL CONSULTANTCALENDAR FOR THE SELECTED CONSULTANT  use port = 44384 for local version VS 8080 for Docker version
+                // GET ALL CONSULTANTCALENDAR FOR THE SELECTED CONSULTANT  use port = 44384 with local db VS 8080 with Docker db
                 // Include Bearer token for Authorization in the Headers
                 fetch("http://localhost:8080/ConsultantCalendars/Consultant/" + selectedConsultantId, {
                     headers: {
@@ -85,17 +85,17 @@
                 slotDuration: "00:30",
                 eventClick: function (info) {
 
-                    // 0) try to Get all usefull informations from info :
-                    console.log(info) // gives an object with all the info about the request
-                    console.log(info.event._def.extendedProps.consultantId); // provides the consultantId
-                    console.log(info.event._def.extendedProps.available); // provides the status (available = true)
-                    console.log(info.event._def.extendedProps.eventId); // provides the Id of the clicked ConsultantCalendar
-                    console.log(info.event._instance.range.start.toISOString()); // provides the date of the appointment with the correct timezone (= no GMT+0200)
-                    console.log(info.event._instance.range.start.toUTCString()); //provides the date in format: Wed, 31 May 2023 16:00:00 GMT
-                    console.log(info.event._def.extendedProps.rowVersion);
+                    // 0) optional, for test only : try to Get all usefull informations from info :
+                    //console.log(info) // gives an object with all the info about the request
+                    //console.log(info.event._def.extendedProps.consultantId); // provides the consultantId
+                    //console.log(info.event._def.extendedProps.available); // provides the status (available = true)
+                    //console.log(info.event._def.extendedProps.eventId); // provides the Id of the clicked ConsultantCalendar
+                    //console.log(info.event._instance.range.start.toISOString()); // provides the date of the appointment with the correct timezone (= no GMT+0200)
+                    //console.log(info.event._instance.range.start.toUTCString()); //provides the date in format: Wed, 31 May 2023 16:00:00 GMT
+                    //console.log(info.event._def.extendedProps.rowVersion);
 
                     // 1) Update the available field in the ConsultantCalendar table for the selected consultant/schedule, to false
-                    fetch("http://localhost:8080/ConsultantCalendars/" + info.event._def.publicId, { //use port = 44384 for local version VS 8080 for Docker version
+                    fetch("http://localhost:8080/ConsultantCalendars/" + info.event._def.publicId, { //use port = 44384 with local db VS 8080 with Docker db
                         // Adding method type
                         method: "PUT",
                         // Adding body or contents to send
@@ -118,7 +118,7 @@
                         .then(json => console.log(json));
 
                     // 2) Create the appointment in the Appointments table in the CH database
-                    fetch("http://localhost:8080/Appointments", {  // use port = 44384 for local version VS 8080 for Docker version
+                    fetch("http://localhost:8080/Appointments", {  // use port = 44384 with local db VS 8080 with Docker db
                         // Adding method type
                         method: "POST",
                         // Adding body or contents to send
@@ -147,23 +147,9 @@
                             else {
                                 alert('Sorry,this schedule is no more available. Please choose another one.');
                                 location.reload(location.href);
-                                //// update consultantCalendar  => doesn't work
-                                //fetch("http://localhost:8080/ConsultantCalendars/Consultant/" + selectedConsultantId, {
-                                //    headers: {
-                                //        "Authorization": "Bearer " + localStorage.getItem("token")
-                                //    }
-                                //})
-                                //.then(result => result.json()).then(data => {
-                                //    EventList = data;
-                                //    ShowCalendar();
-                                //});
                             }
                         })
                         .then(json => console.log(json));
-
-
-                    // 4) reload page to show the update or go back to home page => so user cannot click twice on the schedule  => TO DO
-
                 },
                 events: EventList.filter(x => x.available != false).map(event => {
                     let endDate = new Date(event.date);

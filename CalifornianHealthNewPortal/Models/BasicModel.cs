@@ -16,11 +16,11 @@ namespace CalifornianHealthNewPortal.Models
         {
             var httpRequestMessage = new HttpRequestMessage(
                 HttpMethod.Get,
-                "https://localhost:32770/")      /*here are the full url : https://localhost:32770/Identity/Account/Login     https://localhost:32770/Identity/Account/Register*/
+                "https://localhost:32768/")      /*here are the full url : https://localhost:32768/Identity/Account/Login     https://localhost:32768/Identity/Account/Register*/
             {
                 Headers =
                 {
-                    { HeaderNames.Accept, "application/json" },  /*Use correct names here*/
+                    { HeaderNames.Accept, "application/json" },
                     { HeaderNames.UserAgent, "HttpRequestsSample" }
                 }
             };
